@@ -1,0 +1,106 @@
+Consider the Insurance database given below. The primary keys are underlined and the data types are specified.
+PERSON (driver-id #: String, name: String, address: String)
+CAR (Regno: String, model: String, year: int)
+ACCIDENT (report-number: int, date: date, location: String)
+OWNS (driver-id #: String, Regno: String)
+PARTICIPATED (driver-id: String, Regno: String, report-number: int, damage-amount: int)
+
+create  database insurance;
+
+i. Create the above tables by properly specifying the primary keys and the foreign keys.
+create table person(
+    driver_id     varchar(10);
+    name          char(20);
+    address      varchar(30),
+    primary key(driver_id));
+
+create table car(
+    regno varchar(10),
+    model varchar(30),
+    year int,
+    primary key(regno));
+    
+  create table accident(
+      report_number int,
+      date date,
+      location varchar(30),
+      primary key(report_number));
+      
+create table owns(
+    Driver_id varchar(10),
+    Regno varchar(10),
+    primary key(Driver_id,regno),
+    foreign key(Driver_id) references person(Driver_id) on delete cascade on update CASCADE,
+    foreign key(Regno) references car(Regno)on delete cascade on update CASCADE);
+
+create table participated(
+    Driver_id varchar(10),
+    Regno varchar(10),
+    Report_number int,
+    Damage_amount int,
+    primary key(Driver_id,Regno,Report_number),
+    foreign key(Driver_id) references person(Driver_id),
+    foreign key(Regno) references car(Regno),
+    foreign key(Report_number) references accident(Report_number));
+
+
+ii.  Enter at least five tuples for each relation.
+
+insert into person(Driver_id,Name,Address)
+values
+('P001', 'PREETHI', 'BASAVANAGUDI'),
+('P002', 'ANAND', 'KORAMANGALA'),      
+('P003', 'VISHAL', 'JAYNAGAR'),
+('P004', 'JAY', 'DASARAHALLI'),
+('P005', 'SHUBHA', 'KORAMANGALA');
+
+INSERT INTO car (Regno, Model, Year) VALUES
+('KA02AB1212', 'SUZUKI', 2001),
+('KA05MA7634', 'RENAULT KWID', 2013),
+('KA10BA1276', 'TATA ALTROZ', 2010),
+('KA16AMN125', 'MAHINDRA SCORPIO', 2007),
+('KA17AD4523', 'HYUNDAI I20', 2003);
+
+insert into accident(Report_number,date,Location) values
+(0001, '2019-12-20', 'Jayanagar'),
+(0009, '2020-07-23', 'Basavanagudi'),
+(0011, '2020-12-23','MG Road'),
+(0015, '2020-09-11', 'BTM layout'),
+(0017, '2021-01-09', 'Kormangala');
+
+INSERT INTO owns(Driver_id, Regno) 
+VALUES
+('P002', 'KA02AB1212'),
+('P005', 'KA05MA7634'),
+('P004', 'KA10BA1276'),
+('P003', 'KA16AMN125'),
+('P003', 'KA17AD4523');
+
+INSERT INTO participated (Driver_id, Regno, Report_number, Damage_amount)
+ VALUES
+('P002', 'KA02AB1212', 0001, 2000),
+('P005', 'KA05MA7634', 0009, 1250),
+('P004', 'KA10BA1276', 0011, 1000),
+('P003', 'KA16AMN125', 0015, 1500),
+('P003', 'KA17AD4523', 0017, 5000);
+
+
+iii.Demonstrate how you
+a.Update the damage amount for the car with a specific Regno in the accident with report number 11 to
+25000.
+       UPDATE participated 
+        set damage_amount = 25000 
+         where regno = ‘KA10BA1276’ AND report_number=11;
+
+b. Add a new accident to the database.
+          insert into accident values(0020,2021-02-12,'Jalahalli');
+
+ iv. Find the total number of people who owned cars that involved in accidents in 2020.
+
+         select count(*) from accident where date between '2020-01-01' and '2020-12-31';
+
+v. Find the number of accidents in which cars belonging to a specific model were involved.
+
+         select count(*)  from participated
+         join car on car.regno = participated.regno
+         where car.model ="TATA ALTROZ";
